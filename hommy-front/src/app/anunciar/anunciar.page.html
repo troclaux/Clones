@@ -10,6 +10,15 @@
 </ion-header>
 
 <ion-content>
+  
+  <ion-fab vertical="center" horizontal="center" slot="fixed">
+    <img [src]="photo" vertical="center" horizontal="center" class="addFoto" />
+    <ion-fab-button (click)="takePicture()">
+      <ion-icon name="camera"></ion-icon>
+    </ion-fab-button>
+    <p>Adicionar Foto</p>
+  </ion-fab>
+
   <div class="ion-padding">
     <form [formGroup]="announceForm" (ngSubmit)="submitForm(announceForm)">
       <ion-list>

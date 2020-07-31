@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ToastController} from '@ionic/angular';
+import { Plugins, CameraResultType, CameraSource } from '@capacitor/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-anunciar',
@@ -11,13 +14,16 @@ export class AnunciarPage implements OnInit {
 
   announceForm: FormGroup;
 
-  constructor(public formbuilder: FormBuilder, public toastController: ToastController) { 
+  photo: SafeResourceUrl;
+
+  constructor(public formbuilder: FormBuilder, public toastController: ToastController, private sanitizer: DomSanitizer) { 
     this.announceForm = this.formbuilder.group({
       title: [null, [Validators.required, Validators.maxLength(100),]],
       people: [null, [Validators.required, Validators.max(99)]],
       bedrooms: [null, [Validators.required, Validators.max(99)]],
       beds: [null, [Validators.required, Validators.max(99)]],
       bathrooms: [null, [Validators.required, Validators.max(99)]],
+      photo: [null]
     });
   }
 
@@ -35,6 +41,18 @@ export class AnunciarPage implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  async takePicture() {
+    const image = await Plugins.Camera.getPhoto({
+      quality: 100,
+      allowEditing: true,
+      saveToGallery: true,
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Camera
+    });
+
+    this.photo = this.sanitizer.bypassSecurityTrustResourceUrl(image && (image.dataUrl));
   }
 
 }
